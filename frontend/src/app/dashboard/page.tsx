@@ -180,13 +180,21 @@ export default function DashboardPage() {
         task.id === id ? updatedTask : task
       ));
 
-      // Re-fetch the full task list to ensure accurate counts
+      // Re-fetch the full task list to ensure accurate counts and consistency with backend
       const refreshedTasks = await getUserTasks(user.id);
       setTasks(refreshedTasks);
 
       setSuccess(updatedTask.completed ? 'Task marked as complete!' : 'Task marked as incomplete!');
       setError(null);
     } catch (err: any) {
+      // If there's an error, revert the optimistic update by re-fetching
+      try {
+        const refreshedTasks = await getUserTasks(user.id);
+        setTasks(refreshedTasks);
+      } catch (revertErr) {
+        console.error('Error reverting task after failed update:', revertErr);
+      }
+
       setError(err.message || 'Failed to update task status');
       console.error('Error toggling task completion:', err);
       setSuccess(null);
