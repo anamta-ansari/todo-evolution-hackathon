@@ -90,11 +90,14 @@
 - **FR-004**: System MUST include User and Task models as key entities
 - **FR-005**: Backend server MUST be runnable with uvicorn command
 - **FR-006**: System MUST follow test-driven development (TDD) approach
-
-*Example of marking unclear requirements:*
-
-- **FR-007**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - Better Auth, JWT, OAuth?]
-- **FR-008**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-007**: System MUST implement conversational interface for todo management
+- **FR-008**: System MUST expose all todo operations as MCP tools following standardized schemas
+- **FR-009**: System MUST maintain no server-side state; all conversation history in database
+- **FR-010**: System MUST authenticate users via Better Auth with JWT tokens
+- **FR-011**: System MUST use OpenAI Agents SDK for AI orchestration
+- **FR-012**: System MUST implement user isolation for all operations
+- **FR-013**: System MUST handle natural language input for all todo operations
+- **FR-014**: System MUST persist conversation history across server restarts
 
 ### Key Entities *(include if feature involves data)*
 

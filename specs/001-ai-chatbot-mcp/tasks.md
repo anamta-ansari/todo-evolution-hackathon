@@ -1,11 +1,6 @@
----
+# Tasks: AI-Powered Todo Chatbot with MCP Architecture
 
-description: "Task list template for feature implementation"
----
-
-# Tasks: [FEATURE NAME]
-
-**Input**: Design documents from `/specs/[###-feature-name]/`
+**Input**: Design documents from `/specs/001-ai-chatbot-mcp/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
 **Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
@@ -25,31 +20,12 @@ description: "Task list template for feature implementation"
 - **Mobile**: `api/src/`, `ios/src/` or `android/src/`
 - Paths shown below assume single project - adjust based on plan.md structure
 
-<!-- 
-  ============================================================================
-  IMPORTANT: The tasks below are SAMPLE TASKS for illustration purposes only.
-  
-  The /sp.tasks command MUST replace these with actual tasks based on:
-  - User stories from spec.md (with their priorities P1, P2, P3...)
-  - Feature requirements from plan.md
-  - Entities from data-model.md
-  - Endpoints from contracts/
-  
-  Tasks MUST be organized by user story so each story can be:
-  - Implemented independently
-  - Tested independently
-  - Delivered as an MVP increment
-  
-  DO NOT keep these sample tasks in the generated tasks.md file.
-  ============================================================================
--->
-
 ## Phase 1: Setup (Shared Infrastructure)
 
 **Purpose**: Project initialization and basic structure
 
 - [ ] T001 Create project structure per implementation plan with backend/ and frontend/ directories
-- [ ] T002 Initialize Python project with FastAPI and SQLModel dependencies
+- [ ] T002 Initialize Python project with FastAPI, SQLModel, OpenAI Agents SDK and Official MCP SDK dependencies
 - [ ] T003 [P] Configure linting and formatting tools for Python backend
 
 ---
@@ -76,70 +52,78 @@ Examples of foundational tasks (adjust based on your project):
 
 ---
 
-## Phase 3: User Story 1 - [Title] (Priority: P1) 🎯 MVP
+## Phase 3: User Story 1 - Natural Language Task Management (Priority: P1) 🎯 MVP
 
-**Goal**: [Brief description of what this story delivers]
+**Goal**: Enable users to interact with their todo list using natural language through a chat interface, supporting add, list, update, delete, and complete tasks.
 
-**Independent Test**: [How to verify this story works on its own]
+**Independent Test**: The system should correctly interpret natural language commands like "Add a task to buy groceries" and execute the appropriate action, returning a confirmation to the user.
 
 ### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T013 [P] [US1] Contract test for chat endpoint in tests/contract/test_chat.py
+- [ ] T014 [P] [US1] Integration test for natural language task management in tests/integration/test_natural_language_tasks.py
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [x] T015 [P] [US1] Create Conversation model in backend/models/conversation.py
+- [x] T016 [P] [US1] Create Message model in backend/models/message.py
+- [x] T017 [US1] Implement MCP server in backend/mcp/server.py (depends on T015, T016)
+- [x] T018 [US1] Implement MCP tools (add_task, list_tasks, complete_task, delete_task, update_task) in backend/mcp/tools.py (depends on T015, T016)
+- [x] T019 [US1] Implement chat API endpoint in backend/routes/chat.py (depends on T017, T018)
+- [x] T020 [US1] Integrate OpenAI Agent with MCP tools in backend/services/ai_agent.py (depends on T017, T018)
+- [ ] T021 [US1] Add JWT verification to chat endpoint (depends on T005)
+- [x] T022 [US1] Create chat page component in frontend/app/chat/page.tsx
+- [x] T023 [US1] Implement chat API client in frontend/lib/chat-api.ts
+- [ ] T024 [US1] Add authentication to chat page (depends on T005)
+- [ ] T025 [US1] Add logging for user story 1 operations
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
 ---
 
-## Phase 4: User Story 2 - [Title] (Priority: P2)
+## Phase 4: User Story 2 - Contextual Conversation Handling (Priority: P2)
 
-**Goal**: [Brief description of what this story delivers]
+**Goal**: Enable the AI assistant to maintain context throughout the conversation, remembering previous interactions and using that information to better assist the user with follow-up requests.
 
-**Independent Test**: [How to verify this story works on its own]
+**Independent Test**: After a user adds a task, they should be able to refer to it later in the conversation without repeating all the details.
 
 ### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T026 [P] [US2] Contract test for conversation context in tests/contract/test_context.py
+- [ ] T027 [P] [US2] Integration test for contextual conversation handling in tests/integration/test_contextual_conversations.py
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T021 [US2] Implement [Service] in src/services/[service].py
-- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T028 [P] [US2] Enhance conversation model with context tracking in backend/models/conversation.py (depends on T015)
+- [ ] T029 [US2] Implement message history retrieval in backend/services/ai_agent.py (depends on T020)
+- [ ] T030 [US2] Update chat API to maintain conversation context (depends on T019, T029)
+- [ ] T031 [US2] Implement context-aware message display in frontend/app/chat/page.tsx (depends on T022)
+- [ ] T032 [US2] Add conversation persistence across page refreshes in frontend (depends on T022)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
 ---
 
-## Phase 5: User Story 3 - [Title] (Priority: P3)
+## Phase 5: User Story 3 - Error Handling and Clarification (Priority: P3)
 
-**Goal**: [Brief description of what this story delivers]
+**Goal**: Ensure that when user requests are ambiguous or impossible to fulfill, the AI assistant asks for clarification or provides helpful alternatives rather than failing silently.
 
-**Independent Test**: [How to verify this story works on its own]
+**Independent Test**: The system should gracefully handle ambiguous requests and guide the user toward successful task completion.
 
 ### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T033 [P] [US3] Contract test for error handling in tests/contract/test_error_handling.py
+- [ ] T034 [P] [US3] Integration test for error handling and clarification in tests/integration/test_error_scenarios.py
 
 ### Implementation for User Story 3
 
-- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T027 [US3] Implement [Service] in src/services/[service].py
-- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T035 [P] [US3] Implement error handling in MCP tools in backend/mcp/tools.py (depends on T018)
+- [ ] T036 [US3] Update OpenAI Agent with clarification prompts in backend/services/ai_agent.py (depends on T020)
+- [ ] T037 [US3] Add error response formatting in backend/routes/chat.py (depends on T019)
+- [ ] T038 [US3] Implement error display in frontend/app/chat/page.tsx (depends on T022)
+- [ ] T039 [US3] Add user-friendly error messages in frontend (depends on T038)
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -153,12 +137,12 @@ Examples of foundational tasks (adjust based on your project):
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] TXXX [P] Documentation updates in docs/
-- [ ] TXXX Code cleanup and refactoring
-- [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
-- [ ] TXXX Security hardening
-- [ ] TXXX Run quickstart.md validation
+- [ ] T040 [P] Documentation updates in docs/
+- [ ] T041 Code cleanup and refactoring
+- [ ] T042 Performance optimization across all stories
+- [ ] T043 [P] Additional unit tests (if requested) in tests/unit/
+- [ ] T044 Security hardening
+- [ ] T045 Run quickstart.md validation
 
 ---
 
@@ -202,12 +186,12 @@ Examples of foundational tasks (adjust based on your project):
 
 ```bash
 # Launch all tests for User Story 1 together (if tests requested):
-Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
-Task: "Integration test for [user journey] in tests/integration/test_[name].py"
+Task: "Contract test for chat endpoint in tests/contract/test_chat.py"
+Task: "Integration test for natural language task management in tests/integration/test_natural_language_tasks.py"
 
 # Launch all models for User Story 1 together:
-Task: "Create [Entity1] model in src/models/[entity1].py"
-Task: "Create [Entity2] model in src/models/[entity2].py"
+Task: "Create Conversation model in backend/models/conversation.py"
+Task: "Create Message model in backend/models/message.py"
 ```
 
 ---

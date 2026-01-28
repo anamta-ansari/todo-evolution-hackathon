@@ -29,7 +29,8 @@ class UserUpdate(UserBase):
     password: Optional[str] = Field(default=None, min_length=8)
 
 class User(UserBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+
+    id: Optional[str] = Field(default=None, primary_key=True)
     password_hash: str = Field(nullable=False)  # Store hashed password
     created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
     updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)

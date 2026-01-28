@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+.auth.db*
+better-auth.db*
+/data

@@ -31,13 +31,14 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-**Part 3 Compliance Check**:
-- [ ] Dashboard & CRUD-focused: Implement protected dashboard UI with full CRUD operations
-- [ ] Technology stack: Next.js 16+ (App Router) with Tailwind CSS, FastAPI + SQLModel + JWT
-- [ ] Project structure: Monorepo with backend/ and frontend/ directories with dashboard at /dashboard
-- [ ] Deliverables: Working dashboard UI, all 5 CRUD operations, user isolation, responsive design
-- [ ] Test-first approach: TDD enforced for all dashboard and CRUD functionality
-- [ ] Security standards: Dashboard protected, user isolation enforced, proper auth state management
+**Phase III Compliance Check**:
+- [ ] AI-Powered Todo Chatbot: Implement conversational interface for todo management
+- [ ] Technology stack: Next.js 16+ (App Router) with OpenAI ChatKit, FastAPI + SQLModel + JWT + OpenAI Agents SDK
+- [ ] MCP-First Design: All todo operations exposed as MCP tools with standardized schemas
+- [ ] Stateless Architecture: Server maintains no state; all conversation history in database
+- [ ] Deliverables: Working conversational interface, MCP tools for all operations, conversation persistence
+- [ ] Test-first approach: TDD enforced for all MCP tools and AI integration
+- [ ] Security standards: Chat interface protected, user isolation enforced, proper auth state management
 
 ## Project Structure
 
