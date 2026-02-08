@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,6 +12,7 @@ import {
   toggleTaskCompletion
 } from '@/utils/api';
 import FloatingChat from '@/components/FloatingChat';
+import { onTaskUpdated } from '@/lib/events';
 
 // Define the Task type
 type Task = {
@@ -47,6 +48,10 @@ export default function DashboardPage() {
   const [filterCategory, setFilterCategory] = useState<string>('all'); // all, or specific category
   const [sortBy, setSortBy] = useState<string>('created_at'); // created_at, due_date, priority, alphabetical
 
+  // State for real-time updates
+  const [newTasksCount, setNewTasksCount] = useState(0);
+  const previousTaskCountRef = useRef(0);
+
   const router = useRouter();
   const { user, signOut, isLoading } = useAuth();
 
@@ -59,14 +64,7 @@ export default function DashboardPage() {
   // Calculate completion percentage
   const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  // Protect the route - redirect to signin if not authenticated
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/signin');
-    }
-  }, [user, isLoading, router]);
-
-  // Load tasks on component mount
+  // Load tasks on component mount and when filters change
   useEffect(() => {
     if (!user && !isLoading) {
       router.push('/signin');
@@ -87,6 +85,23 @@ export default function DashboardPage() {
           params.append('sort_by', sortBy);
 
           const tasksFromApi = await getUserTasks(user.id, params.toString());
+          
+          // Check if new tasks were added
+          const previousCount = previousTaskCountRef.current;
+          const currentCount = tasksFromApi.length;
+          
+          if (currentCount > previousCount && previousCount > 0) {
+            const newCount = currentCount - previousCount;
+            setNewTasksCount(newCount);
+            
+            // Show notification
+            console.log(`[DASHBOARD] ${newCount} new task(s) added!`);
+            
+            // Auto-hide notification after 3 seconds
+            setTimeout(() => setNewTasksCount(0), 3000);
+          }
+          
+          previousTaskCountRef.current = currentCount;
           setTasks(tasksFromApi);
           setFilteredTasks(tasksFromApi);
         } catch (err) {
@@ -101,6 +116,101 @@ export default function DashboardPage() {
     }
   }, [user, isLoading, router, filterPriority, filterStatus, filterCategory, searchTerm, sortBy]);
 
+  // Auto-refresh every 3 seconds
+  useEffect(() => {
+    if (!user || !user.id) return;
+
+    const interval = setInterval(() => {
+      console.log('[DASHBOARD] Auto-refreshing tasks...');
+      const fetchTasks = async () => {
+        try {
+          // Build query parameters
+          const params = new URLSearchParams();
+          if (filterPriority !== 'all') params.append('priority', filterPriority);
+          if (filterStatus !== 'all') params.append('status', filterStatus);
+          if (filterCategory !== 'all') params.append('category', filterCategory);
+          if (searchTerm) params.append('search', searchTerm);
+          params.append('sort_by', sortBy);
+
+          const tasksFromApi = await getUserTasks(user.id, params.toString());
+          
+          // Check if new tasks were added
+          const previousCount = previousTaskCountRef.current;
+          const currentCount = tasksFromApi.length;
+          
+          if (currentCount > previousCount && previousCount > 0) {
+            const newCount = currentCount - previousCount;
+            setNewTasksCount(newCount);
+            
+            // Show notification
+            console.log(`[DASHBOARD] ${newCount} new task(s) added!`);
+            
+            // Auto-hide notification after 3 seconds
+            setTimeout(() => setNewTasksCount(0), 3000);
+          }
+          
+          previousTaskCountRef.current = currentCount;
+          setTasks(tasksFromApi);
+          setFilteredTasks(tasksFromApi);
+        } catch (err) {
+          console.error('Error auto-refreshing tasks:', err);
+        }
+      };
+
+      fetchTasks();
+    }, 3000); // Refresh every 3 seconds
+
+    // Cleanup on unmount
+    return () => clearInterval(interval);
+  }, [user?.id, filterPriority, filterStatus, filterCategory, searchTerm, sortBy]);
+
+  // Listen for task update events from chat
+  useEffect(() => {
+    if (!user || !user.id) return;
+
+    const cleanup = onTaskUpdated(() => {
+      console.log('[DASHBOARD] Task update event received, refreshing...');
+      const fetchTasks = async () => {
+        try {
+          // Build query parameters
+          const params = new URLSearchParams();
+          if (filterPriority !== 'all') params.append('priority', filterPriority);
+          if (filterStatus !== 'all') params.append('status', filterStatus);
+          if (filterCategory !== 'all') params.append('category', filterCategory);
+          if (searchTerm) params.append('search', searchTerm);
+          params.append('sort_by', sortBy);
+
+          const tasksFromApi = await getUserTasks(user.id, params.toString());
+          
+          // Check if new tasks were added
+          const previousCount = previousTaskCountRef.current;
+          const currentCount = tasksFromApi.length;
+          
+          if (currentCount > previousCount && previousCount > 0) {
+            const newCount = currentCount - previousCount;
+            setNewTasksCount(newCount);
+            
+            // Show notification
+            console.log(`[DASHBOARD] ${newCount} new task(s) added!`);
+            
+            // Auto-hide notification after 3 seconds
+            setTimeout(() => setNewTasksCount(0), 3000);
+          }
+          
+          previousTaskCountRef.current = currentCount;
+          setTasks(tasksFromApi);
+          setFilteredTasks(tasksFromApi);
+        } catch (err) {
+          console.error('Error refreshing tasks after event:', err);
+        }
+      };
+
+      fetchTasks();
+    });
+
+    return cleanup; // Remove listener on unmount
+  }, [user?.id, filterPriority, filterStatus, filterCategory, searchTerm, sortBy]);
+
   // Clear success message after 3 seconds
   useEffect(() => {
     if (success) {
@@ -110,6 +220,47 @@ export default function DashboardPage() {
       return () => clearTimeout(timer);
     }
   }, [success]);
+
+  // Manual refresh function
+  const handleRefresh = async () => {
+    console.log('[DASHBOARD] Manual refresh triggered');
+    if (!user) return;
+
+    try {
+      // Build query parameters
+      const params = new URLSearchParams();
+      if (filterPriority !== 'all') params.append('priority', filterPriority);
+      if (filterStatus !== 'all') params.append('status', filterStatus);
+      if (filterCategory !== 'all') params.append('category', filterCategory);
+      if (searchTerm) params.append('search', searchTerm);
+      params.append('sort_by', sortBy);
+
+      const tasksFromApi = await getUserTasks(user.id, params.toString());
+      
+      // Check if new tasks were added
+      const previousCount = previousTaskCountRef.current;
+      const currentCount = tasksFromApi.length;
+      
+      if (currentCount > previousCount && previousCount > 0) {
+        const newCount = currentCount - previousCount;
+        setNewTasksCount(newCount);
+        
+        // Show notification
+        console.log(`[DASHBOARD] ${newCount} new task(s) added!`);
+        
+        // Auto-hide notification after 3 seconds
+        setTimeout(() => setNewTasksCount(0), 3000);
+      }
+      
+      previousTaskCountRef.current = currentCount;
+      setTasks(tasksFromApi);
+      setFilteredTasks(tasksFromApi);
+      setSuccess('Tasks refreshed successfully!');
+    } catch (err) {
+      setError('Failed to refresh tasks');
+      console.error('Error refreshing tasks:', err);
+    }
+  };
 
   // Handle logout
   const handleLogout = async () => {
@@ -277,6 +428,9 @@ export default function DashboardPage() {
       </div>
     );
   }
+
+  // Use the existing loading state
+  const combinedLoading = isLoading;
 
   // Show nothing if not authenticated (will redirect)
   if (!user && !isLoading) {
@@ -478,6 +632,21 @@ export default function DashboardPage() {
               <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
                 <h2 className="text-xl font-semibold text-gray-800">Today's Tasks</h2>
 
+                {/* New task notification and refresh button */}
+                <div className="flex flex-wrap gap-3">
+                  {newTasksCount > 0 && (
+                    <div className="p-2 bg-green-100 border border-green-400 text-green-800 rounded text-sm">
+                      ✅ {newTasksCount} new task{newTasksCount > 1 ? 's' : ''} added!
+                    </div>
+                  )}
+                  <button
+                    onClick={handleRefresh}
+                    className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                  >
+                    Refresh Tasks
+                  </button>
+                </div>
+
                 {/* Search and Filter Controls */}
                 <div className="flex flex-wrap gap-3">
                   <div className="relative">
@@ -558,7 +727,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {loading ? (
+              {combinedLoading ? (
                 <div className="flex justify-center items-center py-8">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
                 </div>
@@ -788,11 +957,16 @@ export default function DashboardPage() {
             </div>
           )}
 
+          {/* Auto-refresh info */}
+          <div className="mt-4 text-center text-xs text-gray-500">
+            Tasks auto-refresh every 3 seconds • Instant sync when chat creates tasks
+          </div>
+
           {/* Tasks List - Hidden for now since we're showing Today's Tasks above */}
           <div className="hidden bg-white p-6 rounded-xl shadow-lg">
             <h2 className="text-2xl font-semibold mb-6">Your Tasks</h2>
 
-            {loading ? (
+            {combinedLoading ? (
               <div className="flex justify-center items-center py-8">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
               </div>

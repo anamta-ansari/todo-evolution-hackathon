@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { X, MessageCircle, Send, Minimize2, Maximize2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { sendChatMessage } from "@/lib/chat-api";
+import { emitTaskUpdated } from "@/lib/events";
 
 interface Message {
   id: string;
@@ -119,6 +120,18 @@ export default function FloatingChat() {
 
       if (response.conversation_id && !conversationId) {
         setConversationId(response.conversation_id);
+      }
+
+      // Check if response contains tool calls that affect tasks
+      if (response.tool_calls && response.tool_calls.length > 0) {
+        const hasTaskOperation = response.tool_calls.some(
+          (call: any) => ['add_task', 'complete_task', 'delete_task', 'update_task'].includes(call.tool)
+        );
+        
+        if (hasTaskOperation) {
+          console.log('[CHAT] Task operation detected, emitting update event');
+          emitTaskUpdated(); // Notify dashboard to refresh
+        }
       }
 
       const assistantMessage: Message = {
