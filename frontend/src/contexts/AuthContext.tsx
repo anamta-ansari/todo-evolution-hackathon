@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Check if user is logged in on initial load
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
+    const storedToken = localStorage.getItem('auth_token');
 
     if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Store user and token in localStorage
         localStorage.setItem('user', JSON.stringify(data));
-        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('auth_token', data.access_token);
 
         setUser({
           id: data.user_id,
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Store user and token in localStorage
         localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('auth_token', data.access_token);
 
         setUser({
           id: data.user.id,
@@ -114,7 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = () => {
     // Remove user and token from localStorage
     localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.removeItem('auth_token');
     setUser(null);
     setToken(null);
     router.push('/signin');

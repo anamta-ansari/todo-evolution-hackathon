@@ -1,0 +1,152 @@
+Importing app...
+App imported successfully
+Importing uvicorn...
+Uvicorn imported successfully
+Starting server...
+INFO:     Started server process [2764]
+INFO:     Waiting for application startup.
+2026-02-02 19:55:28,379 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2026-02-02 19:55:28,379 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user")
+2026-02-02 19:55:28,379 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2026-02-02 19:55:28,380 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("task")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("task")
+2026-02-02 19:55:28,380 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2026-02-02 19:55:28,380 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("conversations")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("conversations")
+2026-02-02 19:55:28,380 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2026-02-02 19:55:28,381 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("messages")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("messages")
+2026-02-02 19:55:28,381 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2026-02-02 19:55:28,381 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+2026-02-02 19:55:39,694 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2026-02-02 19:55:39,698 INFO sqlalchemy.engine.Engine SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+INFO:sqlalchemy.engine.Engine:SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+2026-02-02 19:55:39,698 INFO sqlalchemy.engine.Engine [generated in 0.00032s] ('test@example.com', 1, 0)
+INFO:sqlalchemy.engine.Engine:[generated in 0.00032s] ('test@example.com', 1, 0)
+2026-02-02 19:55:40,019 INFO sqlalchemy.engine.Engine INSERT INTO user (email, password_hash, name, created_at, updated_at, is_active) VALUES (?, ?, ?, ?, ?, ?)
+INFO:sqlalchemy.engine.Engine:INSERT INTO user (email, password_hash, name, created_at, updated_at, is_active) VALUES (?, ?, ?, ?, ?, ?)
+2026-02-02 19:55:40,019 INFO sqlalchemy.engine.Engine [generated in 0.00045s] ('test@example.com', '$2b$12$uVXMiWkVI3QUf/XuBP0YruVFUZvrR9NWy4kEpqf9mMrRGi5CAfhTG', 'Test User', '2026-02-02 14:55:40.016220', '2026-02-02 14:55:40.016587', 1)
+INFO:sqlalchemy.engine.Engine:[generated in 0.00045s] ('test@example.com', '$2b$12$uVXMiWkVI3QUf/XuBP0YruVFUZvrR9NWy4kEpqf9mMrRGi5CAfhTG', 'Test User', '2026-02-02 14:55:40.016220', '2026-02-02 14:55:40.016587', 1)
+2026-02-02 19:55:40,020 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+2026-02-02 19:55:40,023 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2026-02-02 19:55:40,024 INFO sqlalchemy.engine.Engine SELECT user.email, user.id, user.password_hash, user.name, user.created_at, user.updated_at, user.is_active 
+FROM user 
+WHERE user.id = ?
+INFO:sqlalchemy.engine.Engine:SELECT user.email, user.id, user.password_hash, user.name, user.created_at, user.updated_at, user.is_active 
+FROM user 
+WHERE user.id = ?
+2026-02-02 19:55:40,024 INFO sqlalchemy.engine.Engine [generated in 0.00036s] (3,)
+INFO:sqlalchemy.engine.Engine:[generated in 0.00036s] (3,)
+2026-02-02 19:55:40,034 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+INFO:     127.0.0.1:53619 - "POST /api/v1/auth/signup HTTP/1.1" 201 Created
+2026-02-02 19:55:42,089 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2026-02-02 19:55:42,089 INFO sqlalchemy.engine.Engine SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+INFO:sqlalchemy.engine.Engine:SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+2026-02-02 19:55:42,089 INFO sqlalchemy.engine.Engine [cached since 2.391s ago] ('test@example.com', 1, 0)
+INFO:sqlalchemy.engine.Engine:[cached since 2.391s ago] ('test@example.com', 1, 0)
+2026-02-02 19:55:42,412 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+INFO:     127.0.0.1:53621 - "POST /api/v1/auth/signin HTTP/1.1" 200 OK
+2026-02-02 19:56:43,571 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2026-02-02 19:56:43,572 INFO sqlalchemy.engine.Engine SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+INFO:sqlalchemy.engine.Engine:SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+2026-02-02 19:56:43,572 INFO sqlalchemy.engine.Engine [cached since 63.87s ago] ('comprehensive_test@example.com', 1, 0)
+INFO:sqlalchemy.engine.Engine:[cached since 63.87s ago] ('comprehensive_test@example.com', 1, 0)
+2026-02-02 19:56:43,889 INFO sqlalchemy.engine.Engine INSERT INTO user (email, password_hash, name, created_at, updated_at, is_active) VALUES (?, ?, ?, ?, ?, ?)
+INFO:sqlalchemy.engine.Engine:INSERT INTO user (email, password_hash, name, created_at, updated_at, is_active) VALUES (?, ?, ?, ?, ?, ?)
+2026-02-02 19:56:43,889 INFO sqlalchemy.engine.Engine [cached since 63.87s ago] ('comprehensive_test@example.com', '$2b$12$btHT9QFcyj/4bOGxATCzSuH.vP6fev0hOi/YubAwdUDLieEwobPUm', 'Comprehensive Test User', '2026-02-02 14:56:43.888672', '2026-02-02 14:56:43.888869', 1)
+INFO:sqlalchemy.engine.Engine:[cached since 63.87s ago] ('comprehensive_test@example.com', '$2b$12$btHT9QFcyj/4bOGxATCzSuH.vP6fev0hOi/YubAwdUDLieEwobPUm', 'Comprehensive Test User', '2026-02-02 14:56:43.888672', '2026-02-02 14:56:43.888869', 1)
+2026-02-02 19:56:43,890 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+2026-02-02 19:56:43,891 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2026-02-02 19:56:43,892 INFO sqlalchemy.engine.Engine SELECT user.email, user.id, user.password_hash, user.name, user.created_at, user.updated_at, user.is_active 
+FROM user 
+WHERE user.id = ?
+INFO:sqlalchemy.engine.Engine:SELECT user.email, user.id, user.password_hash, user.name, user.created_at, user.updated_at, user.is_active 
+FROM user 
+WHERE user.id = ?
+2026-02-02 19:56:43,892 INFO sqlalchemy.engine.Engine [cached since 63.87s ago] (4,)
+INFO:sqlalchemy.engine.Engine:[cached since 63.87s ago] (4,)
+2026-02-02 19:56:43,894 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+INFO:     127.0.0.1:53631 - "POST /api/v1/auth/signup HTTP/1.1" 201 Created
+2026-02-02 19:56:52,559 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2026-02-02 19:56:52,559 INFO sqlalchemy.engine.Engine SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+INFO:sqlalchemy.engine.Engine:SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+2026-02-02 19:56:52,559 INFO sqlalchemy.engine.Engine [cached since 72.86s ago] ('final_test@example.com', 1, 0)
+INFO:sqlalchemy.engine.Engine:[cached since 72.86s ago] ('final_test@example.com', 1, 0)
+2026-02-02 19:56:52,879 INFO sqlalchemy.engine.Engine INSERT INTO user (email, password_hash, name, created_at, updated_at, is_active) VALUES (?, ?, ?, ?, ?, ?)
+INFO:sqlalchemy.engine.Engine:INSERT INTO user (email, password_hash, name, created_at, updated_at, is_active) VALUES (?, ?, ?, ?, ?, ?)
+2026-02-02 19:56:52,879 INFO sqlalchemy.engine.Engine [cached since 72.86s ago] ('final_test@example.com', '$2b$12$fk2/YoNSc9vA922xeUtt1OOiCaM2.vQ0eh5DjOsryEeu77lZ3Lb6y', 'Final Test', '2026-02-02 14:56:52.879090', '2026-02-02 14:56:52.879267', 1)
+INFO:sqlalchemy.engine.Engine:[cached since 72.86s ago] ('final_test@example.com', '$2b$12$fk2/YoNSc9vA922xeUtt1OOiCaM2.vQ0eh5DjOsryEeu77lZ3Lb6y', 'Final Test', '2026-02-02 14:56:52.879090', '2026-02-02 14:56:52.879267', 1)
+2026-02-02 19:56:52,880 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+2026-02-02 19:56:52,882 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2026-02-02 19:56:52,882 INFO sqlalchemy.engine.Engine SELECT user.email, user.id, user.password_hash, user.name, user.created_at, user.updated_at, user.is_active 
+FROM user 
+WHERE user.id = ?
+INFO:sqlalchemy.engine.Engine:SELECT user.email, user.id, user.password_hash, user.name, user.created_at, user.updated_at, user.is_active 
+FROM user 
+WHERE user.id = ?
+2026-02-02 19:56:52,882 INFO sqlalchemy.engine.Engine [cached since 72.86s ago] (5,)
+INFO:sqlalchemy.engine.Engine:[cached since 72.86s ago] (5,)
+2026-02-02 19:56:52,884 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+INFO:     127.0.0.1:53634 - "POST /api/v1/auth/signup HTTP/1.1" 201 Created
+2026-02-02 19:56:59,596 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2026-02-02 19:56:59,596 INFO sqlalchemy.engine.Engine SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+INFO:sqlalchemy.engine.Engine:SELECT user.email AS user_email, user.id AS user_id, user.password_hash AS user_password_hash, user.name AS user_name, user.created_at AS user_created_at, user.updated_at AS user_updated_at, user.is_active AS user_is_active 
+FROM user 
+WHERE user.email = ?
+ LIMIT ? OFFSET ?
+2026-02-02 19:56:59,597 INFO sqlalchemy.engine.Engine [cached since 79.9s ago] ('final_test@example.com', 1, 0)
+INFO:sqlalchemy.engine.Engine:[cached since 79.9s ago] ('final_test@example.com', 1, 0)
+2026-02-02 19:56:59,922 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+INFO:     127.0.0.1:53636 - "POST /api/v1/auth/signin HTTP/1.1" 200 OK

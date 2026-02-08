@@ -11,7 +11,7 @@ from backend.dependencies.auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     get_current_user
 )
-from passlib.context import CryptContext
+import bcrypt
 from typing import Dict
 from pydantic import BaseModel
 
@@ -26,18 +26,27 @@ class Credentials(BaseModel):
 class RefreshTokenRequest(BaseModel):
     refresh_token: str
 
-# Password hashing context
-pwd_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated="auto")
-
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a plain password against a hashed password"""
-    return pwd_context.verify(plain_password, hashed_password)
+    # Convert strings to bytes for bcrypt
+    password_bytes = plain_password.encode('utf-8')
+    hashed_bytes = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(password_bytes, hashed_bytes)
 
 def get_password_hash(password: str) -> str:
     """Hash a plain password"""
     # Bcrypt has a 72 character limit, so we truncate if necessary
-    truncated_password = password[:72] if len(password) > 72 else password
-    return pwd_context.hash(truncated_password)
+    # Ensure we handle the password properly before passing to bcrypt
+    if len(password) > 72:
+        # Take the first 72 characters to stay within bcrypt limits
+        password = password[:72]
+    # Convert string to bytes for bcrypt
+    password_bytes = password.encode('utf-8')
+    # Generate salt and hash the password
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    # Convert back to string for storage
+    return hashed.decode('utf-8')
 
 from fastapi.responses import JSONResponse
 
@@ -65,7 +74,8 @@ def signup(user: UserCreate, session: Session = Depends(get_session)):
     # Create new user
     db_user = User(
         email=user.email,
-        password_hash=hashed_password
+        password_hash=hashed_password,
+        name=user.name
     )
 
     session.add(db_user)

@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING, Optional
 from datetime import datetime
 from enum import Enum
+from sqlalchemy import Column, Integer
 
 # Handle circular import
 if TYPE_CHECKING:
@@ -43,8 +44,10 @@ class TaskRead(TaskBase):
     updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
 class Task(TaskBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: str = Field(foreign_key="user.id", nullable=False)
+    __tablename__ = "task"
+
+    id: int = Field(default=None, sa_column=Column(Integer, primary_key=True, autoincrement=True))
+    user_id: int = Field(foreign_key="user.id", nullable=False)
     created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
     updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
 

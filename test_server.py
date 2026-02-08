@@ -1,46 +1,37 @@
+#!/usr/bin/env python3
+"""Test server to debug authentication endpoints"""
+
 import sys
 import os
-import threading
-import time
-import requests
+import traceback
 
-# Add the project root to the path
-sys.path.insert(0, os.path.abspath('.'))
+# Add the current directory to the Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
+print("Importing modules...")
 
-print("Starting server...")
-
-# Import and run the app
-from backend.main import app
-import uvicorn
-
-def run_server():
-    uvicorn.run(app, host='127.0.0.1', port=8001, log_level="debug")
-
-# Start server in a thread
-server_thread = threading.Thread(target=run_server)
-server_thread.daemon = True
-server_thread.start()
-
-print("Server started in background thread")
-print("Waiting for server to be ready...")
-
-# Wait a bit for the server to start
-time.sleep(3)
-
-# Test the server
 try:
-    response = requests.get("http://127.0.0.1:8001/")
-    print(f"Server responded: {response.status_code} - {response.json()}")
+    from backend.main import app
+    print("Successfully imported app")
 except Exception as e:
-    print(f"Error connecting to server: {e}")
+    print(f"Error importing app: {e}")
+    traceback.print_exc()
+    sys.exit(1)
 
-# Keep the main thread alive
 try:
-    while True:
-        time.sleep(1)
-except KeyboardInterrupt:
-    print("Shutting down...")
+    import uvicorn
+    print("Successfully imported uvicorn")
+except ImportError as e:
+    print(f"Error importing uvicorn: {e}")
+    sys.exit(1)
+
+if __name__ == "__main__":
+    print("Starting server on port 8001...")
+    try:
+        uvicorn.run(app, host="127.0.0.1", port=8001, log_level="info", reload=False)
+    except Exception as e:
+        print(f"Server failed to start: {e}")
+        traceback.print_exc()
+        sys.exit(1)

@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
  * Get the JWT token from localStorage
  */
 function getToken(): string | null {
-  return localStorage.getItem('token');
+  return localStorage.getItem('auth_token');
 }
 
 /**
@@ -133,15 +133,12 @@ export async function updateUserTask(
  * Delete a task for a user
  */
 export async function deleteUserTask(userId: number, taskId: number): Promise<void> {
-  await fetch(
-    `${API_BASE_URL}/api/v1/users/${userId}/tasks/${taskId}`,
+  await apiRequest(
+    `/tasks/${taskId}`,
     {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getToken()}`
-      }
-    }
+    },
+    userId
   );
 }
 

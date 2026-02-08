@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING, Optional, List
 from datetime import datetime
 import re
+from sqlalchemy import Column, Integer
 
 # Handle circular import
 if TYPE_CHECKING:
@@ -18,6 +19,7 @@ class UserBase(SQLModel):
 
 class UserCreate(UserBase):
     password: str = Field(min_length=8)  # Require minimum 8 characters for password
+    name: Optional[str] = Field(default=None)  # Optional name field
 
 class UserRead(UserBase):
     id: int
@@ -29,9 +31,11 @@ class UserUpdate(UserBase):
     password: Optional[str] = Field(default=None, min_length=8)
 
 class User(UserBase, table=True):
+    __tablename__ = "user"
 
-    id: Optional[str] = Field(default=None, primary_key=True)
+    id: int = Field(default=None, sa_column=Column(Integer, primary_key=True, autoincrement=True))
     password_hash: str = Field(nullable=False)  # Store hashed password
+    name: Optional[str] = Field(default=None, nullable=True)  # Optional user name - added nullable=True
     created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
     updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
     is_active: bool = Field(default=True)

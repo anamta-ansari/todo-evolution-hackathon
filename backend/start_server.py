@@ -19,11 +19,11 @@ if __name__ == "__main__":
         print("Please check your .env file")
         sys.exit(1)
     
-    print("✅ All environment variables loaded")
-    print("🚀 Starting FastAPI server...")
-    print("📍 Server will be available at: http://localhost:8000")
-    print("📚 API documentation at: http://localhost:8000/docs")
-    print("💚 Health check at: http://localhost:8000/health")
+    print("[OK] All environment variables loaded")
+    print("[STARTING] FastAPI server...")
+    print("Server will be available at: http://localhost:8000")
+    print("API documentation at: http://localhost:8000/docs")
+    print("Health check at: http://localhost:8000/health")
     print("\nPress CTRL+C to stop the server\n")
     
     uvicorn.run(

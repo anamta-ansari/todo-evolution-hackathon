@@ -25,9 +25,14 @@ from backend.api.health import router as health_router
 from backend.api.auth import router as auth_router
 from backend.api.tasks import router as tasks_router
 from backend.routes.chat import router as chat_router
+from backend.routes import test
 
 # Import both models to ensure they're registered with SQLAlchemy
 from backend.models import user, task, conversation, message
+
+# Import rate limiting
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from backend.middleware import setup_rate_limiter
 
 # Lifespan context manager for startup/shutdown events
 @asynccontextmanager
@@ -46,31 +51,32 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Configure CORS for localhost with common ports
+# Setup rate limiting
+limiter = setup_rate_limiter(app)
+
+# Add CORS - allow ALL origins temporarily for debugging
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:8000",
-        "http://localhost:8080",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001",
-        "http://127.0.0.1:8000",
-        "http://127.0.0.1:8080",
-        "http://localhost:3002",
-        "http://127.0.0.1:3002"
-    ],
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Add the rate limit exception handler to the app
+from slowapi.errors import RateLimitExceeded
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # Include API routes
 app.include_router(health_router)
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(tasks_router, prefix="/api/v1")
+
+# Include the chat router
 app.include_router(chat_router, prefix="")
+
+# Include the test router
+app.include_router(test.router)
 
 @app.get("/")
 def read_root():

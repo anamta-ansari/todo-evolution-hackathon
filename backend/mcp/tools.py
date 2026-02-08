@@ -41,7 +41,7 @@ def list_tasks_tool(user_id: str, status: str = "all") -> List[Dict[str, Any]]:
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
-                "completed": task.complete,
+                "completed": task.completed,
                 "created_at": task.created_at.isoformat()
             }
             for task in tasks

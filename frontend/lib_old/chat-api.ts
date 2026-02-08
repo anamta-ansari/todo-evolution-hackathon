@@ -1,30 +1,80 @@
-"use client";
-
 export async function sendChatMessage(
   userId: string,
   message: string,
-  conversationId?: number
-) {
-  // Get JWT token from auth context or storage
-  // This assumes you have a way to get the JWT token from Better Auth
-  const token = localStorage.getItem("better-auth.session_token"); // Adjust based on your auth implementation
+  conversationId?: number,
+  token?: string
+): Promise<any> {
   
-  const response = await fetch(`/api/${userId}/chat`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      conversation_id: conversationId,
-      message
-    })
-  });
+  console.log('════════════════════════════════════');
+  console.log('CHAT API CALL STARTED');
+  console.log('════════════════════════════════════');
+  console.log('Step 1: Input parameters');
+  console.log('  userId:', userId);
+  console.log('  message:', message);
+  console.log('  conversationId:', conversationId);
+  console.log('  token provided:', !!token);
   
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.detail || "Chat request failed");
+  let authToken = token;
+  if (!authToken && typeof window !== 'undefined') {
+    authToken = localStorage.getItem('auth_token');
+    console.log('Step 2: Retrieved token from localStorage');
   }
   
-  return response.json();
+  if (!authToken) {
+    console.error('Step 2: FAILED - No token available');
+    throw new Error('Please log in to use chat');
+  }
+  console.log('  token (first 15 chars):', authToken.substring(0, 15));
+
+  const url = "http://localhost:8000/api/" + userId + "/chat";
+  console.log('Step 3: Built URL:', url);
+
+  const requestBody = { 
+    conversation_id: conversationId, 
+    message 
+  };
+  console.log('Step 4: Request body:', JSON.stringify(requestBody));
+
+  console.log('Step 5: Making fetch request...');
+  
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + authToken,
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    console.log('Step 6: Fetch completed');
+    console.log('  status:', response.status);
+    console.log('  statusText:', response.statusText);
+    console.log('  ok:', response.ok);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Step 7: Response not OK');
+      console.error('  error body:', errorText);
+      throw new Error(`Server returned ${response.status}: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('Step 7: Parsed response:', data);
+    console.log('════════════════════════════════════');
+    console.log('CHAT API CALL SUCCEEDED');
+    console.log('════════════════════════════════════');
+    return data;
+
+  } catch (error: any) {
+    console.error('════════════════════════════════════');
+    console.error('CHAT API CALL FAILED');
+    console.error('════════════════════════════════════');
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Full error object:', error);
+    console.error('════════════════════════════════════');
+    throw error;
+  }
 }

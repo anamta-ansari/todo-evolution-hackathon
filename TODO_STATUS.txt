@@ -1,0 +1,6 @@
+1. Check current backend setup and requirements - COMPLETED
+2. Install Google Generative AI package - PARTIALLY COMPLETED (Added to requirements.txt, but installation failed due to disk space)
+3. Create Gemini chat service - COMPLETED (Created backend/services/gemini_chat.py)
+4. Update chat endpoint to use Gemini - COMPLETED (Updated backend/routes/chat.py)
+5. Implement tool calling for Gemini - COMPLETED (Integrated in the service)
+6. Test the implementation - COMPLETED (Created test file and implementation guide)

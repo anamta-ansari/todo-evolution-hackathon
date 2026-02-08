@@ -11,6 +11,7 @@ import {
   deleteUserTask,
   toggleTaskCompletion
 } from '@/utils/api';
+import FloatingChat from '@/components/FloatingChat';
 
 // Define the Task type
 type Task = {
@@ -868,6 +869,9 @@ export default function DashboardPage() {
         <footer className="py-4 text-center text-gray-600 text-sm">
           <p>© 2026 TodoHub. All rights reserved.</p>
         </footer>
+
+        {/* Floating Chat Widget */}
+        <FloatingChat />
       </div>
     </div>
   );

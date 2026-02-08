@@ -1,23 +1,31 @@
-import time
-import requests
-import json
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-time.sleep(2)  # Wait for server to be ready
+from backend.api.auth import signin, Credentials
+from backend.db.session import get_session
+from sqlmodel import Session
 
-# Test the signin endpoint with the same credentials
-url = "http://127.0.0.1:8000/api/v1/auth/signin"
-headers = {
-    "Content-Type": "application/json"
-}
-data = {
-    "email": "test@example.com",
-    "password": "testpassword"
-}
+def test_signin():
+    # Test signing in with the user created in the previous test
+    credentials = Credentials(email='test1@example.com', password='password123')
 
-try:
-    print("Testing signin endpoint...")
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    print(f"Status Code: {response.status_code}")
-    print(f"Response: {response.text}")
-except Exception as e:
-    print(f"Error occurred: {str(e)}")
+    # Get session
+    session_gen = get_session()
+    session = next(session_gen)
+
+    try:
+        print("Attempting to signin user...")
+        result = signin(credentials, session)
+        print('Signin successful:', result)
+        return True
+    except Exception as e:
+        print('Signin failed:', str(e))
+        import traceback
+        traceback.print_exc()
+        return False
+    finally:
+        session.close()
+
+if __name__ == "__main__":
+    test_signin()

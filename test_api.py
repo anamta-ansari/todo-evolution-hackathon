@@ -1,20 +1,31 @@
-import requests
+import asyncio
+import httpx
 import json
 
-# Test the signup endpoint
-url = "http://127.0.0.1:8000/api/v1/auth/signup"
-headers = {
-    "Content-Type": "application/json"
-}
-data = {
-    "email": "test@example.com",
-    "password": "testpassword"
-}
+async def test_api():
+    """
+    Test the API endpoint to see if it's accessible and how it responds
+    """
+    async with httpx.AsyncClient(base_url="http://localhost:8000", timeout=30.0) as client:
+        # First, we need to authenticate to get a user ID and token
+        # For now, let's just test if the server is responding
+        try:
+            # Test the root endpoint
+            response = await client.get("/")
+            print(f"Root endpoint status: {response.status_code}")
+            print(f"Root endpoint response: {response.json()}")
+            
+            # Test a health check endpoint if available
+            try:
+                health_response = await client.get("/health")
+                print(f"Health endpoint status: {health_response.status_code}")
+                print(f"Health endpoint response: {health_response.json()}")
+            except Exception as e:
+                print(f"Health endpoint error (this is OK if not implemented): {e}")
+                
+        except Exception as e:
+            print(f"Error connecting to server: {e}")
+            print("Make sure the backend server is running on http://localhost:8000")
 
-try:
-    print("Testing signup endpoint...")
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    print(f"Status Code: {response.status_code}")
-    print(f"Response: {response.text}")
-except Exception as e:
-    print(f"Error occurred: {str(e)}")
+if __name__ == "__main__":
+    asyncio.run(test_api())

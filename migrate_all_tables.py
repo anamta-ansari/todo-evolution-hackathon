@@ -24,7 +24,7 @@ def create_all_tables():
         print(f"Tables in database: {tables}")
 
         # Check for required tables
-        required_tables = ["users", "task", "conversations", "messages"]
+        required_tables = ["user", "task", "conversations", "messages"]
         missing_tables = [table for table in required_tables if table not in tables]
         
         if missing_tables:

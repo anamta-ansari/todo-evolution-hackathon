@@ -13,7 +13,7 @@ from backend.main import app
 import uvicorn
 
 try:
-    uvicorn.run(app, host='127.0.0.1', port=8001, log_level="debug")
+    uvicorn.run(app, host='0.0.0.0', port=8000, log_level="debug")
 except Exception as e:
     print(f"Error: {e}")
     import traceback
